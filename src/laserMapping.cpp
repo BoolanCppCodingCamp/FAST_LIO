@@ -411,8 +411,13 @@ bool sync_packages(MeasureGroup &meas)
     meas.imu.clear();
     while ((!imu_buffer.empty()) && (imu_time < lidar_end_time))
     {
-        meas.imu.push_back(imu_buffer.front());
         imu_buffer.pop_front();
+        imu_time = imu_buffer.front()->header.stamp.toSec();
+        if (imu_time > lidar_end_time)
+           {
+             meas.imu.push_back(imu_buffer.front());
+             break;
+           }
     }
 
     lidar_buffer.pop_front();
